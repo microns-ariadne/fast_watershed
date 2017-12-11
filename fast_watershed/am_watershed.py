@@ -7,7 +7,10 @@ class Connectivity(enum.Enum):
     FOUR=4,
     '''Three-dimensional 6-connectivity'''
     SIX=6
-def watershed(image, markers, connectivity=Connectivity.SIX, output=False):
+def watershed(image, markers, 
+              connectivity=Connectivity.SIX, 
+              output=False, 
+              threshold=255):
     '''Perform a seeded watershed
 
     :param image: 3 dimensional uint8 image being watershedded
@@ -18,6 +21,7 @@ def watershed(image, markers, connectivity=Connectivity.SIX, output=False):
     :param output: if True, the watershed is done in-place and the markers
         array is overwritten with the segmentation. In this case,
         the markers array must be a contiguous array with dtype of uint32.
+    :param threshold: any value greater than this is assigned "0"
     :returns: the markers array.
     '''
     if not output:
@@ -25,6 +29,7 @@ def watershed(image, markers, connectivity=Connectivity.SIX, output=False):
         temp[:] = markers[:]
         markers = temp
     _am_watershed.watershed(
-        np.ascontiguousarray(image, np.uint8), markers, connectivity.value)
+        np.ascontiguousarray(image, np.uint8), markers, connectivity.value,
+        threshold)
     return markers
 

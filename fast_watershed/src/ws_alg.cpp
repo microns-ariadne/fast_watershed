@@ -6,7 +6,7 @@
 using namespace std;
 
 void do_watershed(
-    uint64_t depth, uint64_t rows, uint64_t cols, 
+    uint64_t depth, uint64_t rows, uint64_t cols, uint8_t threshold,
         uint8_t *image, uint32_t *markers, uint64_t *indexBuffer, 
         WatershedConnectivity *conn) {
 
@@ -82,9 +82,12 @@ void do_watershed(
                     continue;
                 }
 
-                markers[nextIndex] = markers[index];
-                q.enqueue(nextIndex, image[nextIndex]);
-                age++;
+                uint8_t v=image[nextIndex];
+                if (v <= threshold) {
+                    markers[nextIndex] = markers[index];
+                    q.enqueue(nextIndex, v);
+                    age++;
+                }
             }
         }
 

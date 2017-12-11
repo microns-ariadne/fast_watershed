@@ -8,12 +8,12 @@ cdef extern from "connectivity.h":
 
 cdef extern from "ws_alg.h" nogil:
     cdef void do_watershed(uint64_t depth, uint64_t rows, uint64_t cols, 
-                           uint8_t *image, uint32_t *markers, 
+                           uint8_t threshold, uint8_t *image, uint32_t *markers, 
                            uint64_t *index_Buffer, WatershedConnectivity *conn)
 
 def watershed(np.ndarray[dtype=np.uint8_t, mode='c', ndim=3] image,
               np.ndarray[dtype=np.uint32_t, mode='c', ndim=3] markers,
-              int connectivity=6):
+              int connectivity=6, uint8_t threshold=255):
     '''Perform a watershed with the given markers on the given image
     
     :param image: image to be watershedded (low values are filled first)
@@ -35,6 +35,7 @@ def watershed(np.ndarray[dtype=np.uint8_t, mode='c', ndim=3] image,
         do_watershed(image.shape[0],
                      image.shape[1],
                      image.shape[2],
+                     threshold,
                      <uint8_t  *>image.data,
                      <uint32_t *>markers.data,
                      <uint64_t *>index_buffer.data,
